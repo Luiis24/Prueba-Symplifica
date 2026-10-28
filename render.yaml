@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: prueba-fullstack-app
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile   # Apunta al Dockerfile que crees arriba
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: prueba-fullstack-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: prueba-fullstack-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: prueba-fullstack-db
+          property: password
+
+databases:
+  - name: prueba-fullstack-db
+    databaseName: prueba_db
+    user: prueba_user
+    plan: free
