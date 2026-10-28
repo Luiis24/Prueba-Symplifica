@@ -1,338 +1,197 @@
-# Prueba Symplifica
+# Prueba Técnica Symplifica — Gestión de Usuarios
 
-Prueba técnica de desarrollador fullstack mid. Aplicación **SPA (Vue.js + Vite)** con
-**API REST (Spring Boot 4 / Java 25)** y **PostgreSQL**, que muestra una tabla con la
-lista de usuarios almacenados en la base de datos.
+<img width="1920" height="945" alt="image" src="https://github.com/user-attachments/assets/150a7841-9dc8-43fc-8aba-b51130bae502" />
 
-El frontend se compila dentro del backend, de modo que **todo puede servirse desde un
-único JAR en el puerto 8080**, o bien trabajarse por separado en desarrollo.
 
----
+Aplicación web full stack desarrollada como parte del proceso de selección para el cargo de **Desarrollador Fullstack Mid en Symplifica**.
 
-## 🚀 Inicio rápido
+El proyecto integra una SPA construida con **Vue 3 y Vite**, una API REST desarrollada con **Java y Spring Boot**, y una base de datos **PostgreSQL** para gestionar usuarios mediante operaciones CRUD.
 
-```bash
-# 1. Valida que tienes todo instalado (Docker, Node 24, Java 25, Maven)
-pnpm validate
+> **Nota sobre esta entrega:** la solución se amplió después de la sesión de prueba técnica. Se completaron las funcionalidades del frontend, se mejoró la interfaz y se incorporó el registro automático de un usuario de demostración solicitado durante la sesión.
 
-# 2. Levanta TODO el entorno con UN SOLO comando
-#    (PostgreSQL + backend en :8080 + frontend en :5173)
-pnpm dev
+## Características
+
+- **Gestión de usuarios (CRUD):** consultar, crear, editar y eliminar registros.
+- **Integración frontend/backend:** comunicación HTTP entre Vue y la API REST.
+- **Registro automático de demostración:** al entrar a la aplicación, se comprueba si existe el usuario de prueba y se registra únicamente si no está presente.
+- **Manejo de estados:** indicadores de carga, mensajes de éxito y errores de las peticiones.
+- **Formulario reactivo:** creación y edición de usuarios con campos vinculados al estado de Vue.
+- **Interfaz responsive:** diseño actualizado con estilos CSS, adaptable a pantallas de escritorio y dispositivos móviles.
+- **Persistencia de datos:** almacenamiento en PostgreSQL.
+- **Migraciones de base de datos:** gestión del esquema y datos iniciales mediante Flyway.
+
+## Tecnologías utilizadas
+
+| Área | Tecnologías |
+|---|---|
+| Frontend | Vue 3, JavaScript, Vite |
+| Backend | Java 25, Spring Boot 4 |
+| Persistencia | Spring Data JDBC |
+| Base de datos | PostgreSQL 16 |
+| Migraciones | Flyway |
+| Pruebas | JUnit 5, Spring Test, Testcontainers |
+| Entorno | Maven, pnpm, Docker |
+| API | REST, JSON, HTTP |
+
+## Arquitectura
+
+El proyecto separa las responsabilidades entre la interfaz de usuario, la API y la persistencia.
+
+```text
+Vue 3 + Vite
+     |
+     | HTTP / JSON
+     v
+UsersController
+     |
+     v
+UsersService
+     |
+     v
+UsersRepository
+     |
+     v
+PostgreSQL
 ```
 
-Con `pnpm dev`:
+- **Frontend:** presenta los usuarios, gestiona el formulario y comunica las acciones del usuario al backend.
+- **Controller:** expone los endpoints REST y construye las respuestas HTTP.
+- **Service:** centraliza las operaciones y la lógica de negocio.
+- **Repository:** utiliza Spring Data JDBC para acceder a los datos.
+- **PostgreSQL:** almacena los registros persistentes.
 
-- **Backend:** http://localhost:8080
-- **Frontend (Vite):** http://localhost:5173
-- **API de usuarios:** http://localhost:8080/api/users
-- **Health check:** http://localhost:8080/actuator/health
+Flyway administra las migraciones de la base de datos. En desarrollo, Vite utiliza un proxy para dirigir las peticiones `/api` al backend.
 
-Pulsa **`Ctrl+C`** para detener el backend y el frontend a la vez.
+## Funcionalidades de la API
 
-### ▶️ Correr el proyecto (comandos con pnpm)
+La versión ampliada incorpora los siguientes endpoints:
 
-| Objetivo | Comando |
-|---|---|
-| **Levantar todo junto** (BD + backend + frontend) | **`pnpm dev`** |
-| Levantar todo para **producción** (JAR único en :8080) | `pnpm start` |
-| Levantar solo **backend** (BD + Spring Boot) | `pnpm serve` |
-| Levantar solo **frontend** (BD + Vite) | `pnpm dev:frontend-only` |
-| Levantar el **backend** sin tocar la BD | `pnpm backend:dev` |
-| Levantar el **frontend** sin tocar la BD | `pnpm frontend:dev` |
-
-### 🧪 Correr las pruebas unitarias (comandos con pnpm)
-
-| Objetivo | Comando |
-|---|---|
-| **Todas las pruebas unitarias** | **`pnpm test`** |
-| Alias de las pruebas unitarias | `pnpm test:unit` |
-| Pruebas del backend (explícito) | `pnpm test:backend` |
-
-> Las pruebas usan **JUnit + Testcontainers**: levantan un PostgreSQL efímero en Docker,
-> por lo que **Docker debe estar corriendo**. Consulta la sección
-> [🧪 Pruebas](#-pruebas) para más detalle.
-
----
-
-## 📋 Requisitos
-
-| Herramienta | Versión requerida |
-|---|---|
-| Node.js | 24.x |
-| Java | 25 |
-| Maven | 3.9+ |
-| Docker | Reciente (con `docker compose`) |
-
-Ejecuta `pnpm validate` para verificarlas automáticamente.
-
----
-
-## 🧾 Comandos disponibles
-
-Todos se ejecutan **desde la raíz del proyecto**.
-
-### Puesta en marcha conjunta
-
-| Comando | Descripción |
-|---|---|
-| **`pnpm dev`** | 🔥 **Comando único.** Inicia PostgreSQL + backend + frontend en paralelo (`Ctrl+C` detiene todo). |
-| `pnpm start` | Flujo de **producción**: instala, compila el frontend, empaqueta el backend y ejecuta el JAR (`java -jar`) en el puerto 8080. |
-| `pnpm serve` | Inicia PostgreSQL + backend Spring Boot (8080). |
-| `pnpm dev:frontend-only` | Inicia PostgreSQL + solo el frontend Vite (útil si ya corres el backend aparte). |
-
-### Validación del entorno
-
-| Comando | Descripción |
-|---|---|
-| `pnpm validate` | Alias de `validate:env`. |
-| `pnpm validate:env` | Verifica Docker, Node.js 24, Java 25 y Maven. |
-
-### Base de datos (PostgreSQL vía Docker en el puerto 5433)
-
-| Comando | Descripción |
-|---|---|
-| `pnpm db:start` | Inicia (o reinicia) el contenedor de PostgreSQL. |
-| `pnpm db:stop` | Detiene el contenedor sin eliminarlo. |
-| `pnpm db:create` | Crea la base de datos `prueba_db` si no existe y asegura las extensiones. |
-| `pnpm db:drop` | ⚠️ Elimina la base de datos y todos sus datos (pide confirmación escribiendo `si`). |
-| `pnpm db:reset` | ⚠️ Elimina y recrea la base de datos. Al reiniciar el backend, Flyway vuelve a crear el esquema y sembrar los datos. |
-| `pnpm db:status` | Muestra el estado del contenedor de PostgreSQL. |
-
-### Frontend (Vue.js + Vite)
-
-| Comando | Descripción |
-|---|---|
-| `pnpm frontend:dev` | Servidor de desarrollo Vite (5173) con proxy `/api` → `:8080`. |
-| `pnpm frontend:build` | Compila el SPA en `backend/src/main/resources/static`. |
-| `pnpm frontend:preview` | Sirve localmente el build de producción (4173). |
-| `pnpm build` | Alias de `frontend:build`. |
-
-### Backend (Spring Boot + Maven)
-
-| Comando | Descripción |
-|---|---|
-| `pnpm backend:dev` | Ejecuta Spring Boot en el puerto 8080. |
-| `pnpm backend:build` | `mvn clean package` (compila y ejecuta los tests). |
-| `pnpm test` | Ejecuta **todas las pruebas unitarias** (backend). |
-| `pnpm test:unit` | Alias de `test`. |
-| `pnpm test:backend` | Ejecuta las pruebas del backend (`mvn test`). |
-
----
-
-## 🗂️ Estructura del proyecto
-
-```
-PruebaSymplifica/
-│
-├── package.json                 # Scripts raíz (pnpm). Orquesta todo el proyecto.
-├── docker-compose.yml           # Servicio PostgreSQL 16 (puerto 5433).
-├── DATABASE.md                  # Documentación detallada de la base de datos.
-├── FRONTEND_SETUP.md            # Documentación de la integración frontend/backend.
-├── README.md                    # Este archivo.
-│
-├── scripts/                     # Utilidades de soporte (Node.js / shell).
-│   ├── dev-all.js               # 🔥 Orquestador de `pnpm dev` (BD + backend + frontend).
-│   ├── validate-env.js          # Validación de dependencias (Docker, Node, Java, Maven).
-│   ├── db-cli.js                # Wrapper Node de los scripts de gestión de la BD.
-│   ├── db-manage.sh             # Gestión de PostgreSQL para Linux/macOS.
-│   ├── db-manage.bat            # Gestión de PostgreSQL para Windows.
-│   └── init-db.sql              # Script de inicialización del contenedor (extensiones).
-│
-├── frontend/                    # SPA con Vue.js 3 + Vite 8.
-│   ├── package.json
-│   ├── vite.config.js           # Build → backend/.../static y proxy /api.
-│   ├── index.html
-│   ├── public/
-│   └── src/
-│       ├── main.js              # Punto de entrada de Vue.
-│       ├── App.vue              # Componente principal: tabla de usuarios.
-│       ├── style.css
-│       ├── components/
-│       │   └── HelloWorld.vue   # Componente de ejemplo de la plantilla Vite (sin uso).
-│       └── assets/
-│
-└── backend/                     # API REST con Spring Boot 4 (Java 25).
-    ├── pom.xml
-    └── src/
-        ├── main/
-        │   ├── java/
-        │   │   ├── com/symplifica/
-        │   │   │   ├── backend/
-        │   │   │   │   └── BackendApplication.java   # Clase principal + @EnableJdbcRepositories.
-        │   │   │   ├── config/
-        │   │   │   │   └── FrontendConfig.java        # Controlador SPA (rutas → index.html).
-        │   │   │   └── user/
-        │   │   │       ├── User.java                  # Entidad (record) mapeada a la tabla users.
-        │   │   │       ├── UsersRepository.java       # Repositorio Spring Data JDBC.
-        │   │   │       ├── UsersService.java          # Lógica de negocio.
-        │   │   │       └── UsersController.java       # Endpoints REST /api/users.
-        │   │   └── db/migration/
-        │   │       ├── V1__Create_Users_Table.java    # Migración Flyway: crea la tabla.
-        │   │       └── V2__Seed_Users.java            # Migración Flyway: inserta 3 usuarios.
-        │   └── resources/
-        │       ├── application.properties             # Configuración (BD, Flyway, Jackson, etc.).
-        │       ├── templates/index.html               # Plantilla Thymeleaf del SPA.
-        │       └── static/                            # Build del frontend (js/, css/, imágenes).
-        │
-        └── test/java/com/symplifica/
-            ├── backend/BackendApplicationTests.java   # Carga del contexto.
-            └── user/UsersServiceTest.java             # Test de integración con Testcontainers.
-```
-
----
-
-## 🔌 API REST
-
-| Método | Ruta | Descripción |
+| Método | Endpoint | Descripción |
 |---|---|---|
-| `GET` | `/api/users` | Lista todos los usuarios. |
-| `GET` | `/api/users/{id}` | Devuelve un usuario por su UUID (404 si no existe). |
+| `GET` | `/api/users` | Consulta todos los usuarios. |
+| `GET` | `/api/users/{id}` | Consulta un usuario por UUID. |
+| `POST` | `/api/users` | Registra un usuario. |
+| `PUT` | `/api/users/{id}` | Actualiza un usuario existente. |
+| `DELETE` | `/api/users/{id}` | Elimina un usuario. |
 
-Ejemplo:
+Las operaciones que requieren un usuario inexistente pueden responder con `404 Not Found`. La creación devuelve `201 Created` y la eliminación exitosa devuelve `204 No Content`, según la implementación del backend.
+
+### Ejemplo de consulta
 
 ```bash
 curl http://localhost:8080/api/users
 ```
 
-Respuesta (resumida):
+### Ejemplo de creación
 
-```json
-[
-  {
-    "id": "11111111-1111-1111-1111-111111111111",
-    "name": "Juan",
-    "lastName": "Perez",
-    "email": "juan.perez@symplifica.com",
-    "gender": "Male",
-    "phone": "+57 300 123 4567",
-    "birthDate": "1990-01-15"
-  }
-]
+```bash
+curl -X POST http://localhost:8080/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Ana",
+    "lastName": "Gomez",
+    "email": "ana.gomez@example.com",
+    "gender": "Female",
+    "phone": "3001234567",
+    "birthDate": "1998-05-20"
+  }'
 ```
 
----
+El identificador y los campos de fecha administrados por el backend dependen de su implementación actual.
 
-## 🗄️ Base de datos
+## Mejoras realizadas después de la sesión técnica
 
-- **Motor:** PostgreSQL 16 (contenedor Docker).
-- **Puerto:** `5433` (no 5432, para evitar conflictos).
-- **Credenciales:** usuario `prueba_user` / contraseña `prueba_password` / BD `prueba_db`.
-- **Migraciones:** Flyway en Java (paquete `db.migration`):
-  - `V1__Create_Users_Table` → crea la tabla `users` e índices.
-  - `V2__Seed_Users` → inserta 3 usuarios de ejemplo (Juan, Maria y Carlos).
+Como complemento al trabajo realizado durante la evaluación, se continuó desarrollando el proyecto para completar las funcionalidades y reforzar los puntos identificados durante la sesión.
 
-Consulta la documentación completa en [`DATABASE.md`](DATABASE.md).
+### 1. Completar el CRUD del frontend
 
----
+Se conectaron las operaciones de creación, consulta, actualización y eliminación con los endpoints del backend mediante `fetch` y peticiones HTTP asíncronas.
 
-## 🧩 Flujos de trabajo
+### 2. Registro automático de usuario
 
-### Desarrollo (un solo comando, recomendado)
+Se incorporó la funcionalidad solicitada durante la sesión: registrar un usuario de demostración al entrar a la aplicación, verificando previamente si ya existe para evitar duplicados en el flujo normal.
+
+### 3. Actualización visual
+
+Se mejoró el CSS para proporcionar una interfaz más limpia y consistente, incluyendo:
+
+- Formulario organizado en columnas.
+- Campos con estados de foco.
+- Botones diferenciados según la acción.
+- Tabla con encabezados y filas más legibles.
+- Mensajes visuales de éxito y error.
+- Adaptación a pantallas pequeñas.
+
+### 4. Manejo de respuestas HTTP
+
+Se incorporaron comprobaciones de las respuestas del servidor para informar al usuario cuando una operación no se completa correctamente.
+
+## Requisitos previos
+
+Para ejecutar el proyecto localmente se requiere:
+
+- Node.js 24.x.
+- pnpm.
+- Java 25.
+- Maven 3.9 o superior.
+- Docker con Docker Compose.
+
+## Instalación y ejecución
+
+Clona el repositorio y accede a la carpeta del proyecto:
+
+```bash
+git clone <URL_DEL_REPOSITORIO>
+cd <CARPETA_DEL_PROYECTO>
+```
+
+Instala las dependencias del proyecto según su configuración y valida el entorno:
+
+```bash
+pnpm validate
+```
+
+Inicia la base de datos, el backend y el frontend:
 
 ```bash
 pnpm dev
 ```
 
-Levanta la BD, el backend y el frontend juntos. Hot reload en el frontend y
-reinicio de contexto en el backend.
+Direcciones locales:
 
-### Desarrollo por separado (3 terminales)
+| Servicio | URL |
+|---|---|
+| Frontend | http://localhost:5173 |
+| Backend | http://localhost:8080 |
+| API de usuarios | http://localhost:8080/api/users |
+| Health check | http://localhost:8080/actuator/health |
 
-```bash
-# Terminal 1
-pnpm db:start
+Para conocer los demás comandos disponibles, consulta la documentación de configuración incluida en el repositorio.
 
-# Terminal 2
-pnpm backend:dev      # http://localhost:8080
+## Pruebas
 
-# Terminal 3
-pnpm frontend:dev     # http://localhost:5173 (proxy /api → :8080)
-```
+El proyecto incluye pruebas de backend con JUnit y Testcontainers.
 
-### Producción (JAR único servido en 8080)
-
-```bash
-pnpm start
-```
-
-Compila el frontend dentro del backend, empaqueta todo y ejecuta el JAR. La
-aplicación completa queda disponible en http://localhost:8080.
-
-### Pruebas unitarias
-
-```bash
-pnpm test            # Ejecuta todas las pruebas unitarias
-pnpm test:unit       # Alias
-pnpm test:backend    # Pruebas del backend (mvn test)
-```
-
-### Compilar el backend (con tests incluidos)
-
-```bash
-pnpm backend:build
-```
-
----
-
-## 🧪 Pruebas
-
-Ejecuta todas las pruebas unitarias con:
+Para ejecutarlas:
 
 ```bash
 pnpm test
 ```
 
-Equivale a `mvn test` dentro de `backend/` y ejecuta los tests de JUnit con
-**Testcontainers** (levanta un PostgreSQL efímero en Docker, por lo que **Docker debe
-estar corriendo**):
+Docker debe estar en ejecución para que Testcontainers pueda levantar la base de datos temporal utilizada en las pruebas.
 
-- `BackendApplicationTests` → verifica que el contexto de Spring carga.
-- `UsersServiceTest` → verifica que las migraciones de Flyway crean y siembran
-  correctamente los 3 usuarios esperados.
+**Nota:** las pruebas existentes verifican los componentes y comportamientos cubiertos por su implementación actual; no implica que cada operación CRUD tenga una prueba automatizada independiente.
 
-También puedes usar los alias:
+## Estado del proyecto
 
-```bash
-pnpm test:unit      # Alias de pnpm test
-pnpm test:backend   # Pruebas del backend (mvn test)
-```
+La aplicación cuenta con el backend desarrollado durante la sesión técnica y una versión complementada del frontend, con el CRUD integrado, mejoras visuales y la funcionalidad de registro automático solicitada durante la evaluación.
 
-Resultado esperado:
+Esta entrega adicional refleja el trabajo realizado después de la sesión y el interés por seguir fortaleciendo las competencias necesarias para el cargo.
 
-```
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
-[INFO] BUILD SUCCESS
-```
+## Autor
 
-> 💡 Recuerda que las pruebas **no** necesitan que la base de datos del proyecto esté
-> levantada: Testcontainers crea su propio contenedor temporal y lo destruye al terminar.
+**Luis Morales**
 
----
+- GitHub: [Luiis24](https://github.com/Luiis24)
+- Portafolio: [lsmoralesdev.netlify.app](https://lsmoralesdev.netlify.app)
 
-## ⚙️ Notas técnicas
-
-- **Spring Boot 4.1.1 / Java 25**: usa Jackson 3 (`tools.jackson`), por lo que las
-  propiedades de fechas están bajo `spring.jackson.datatype.datetime.*`.
-- **Flyway** corre en versión Java (clases en `db.migration`), no en SQL.
-- El controlador `FrontendConfig` redirige a `index.html` **solo** las rutas del SPA;
-  las APIs (`/api/**`), las de actuator (`/actuator/**`) y los recursos estáticos
-  (`/js/**`, `/css/**`, etc.) se sirven con sus propios manejadores.
-- **Actuator** expone `/actuator/health` e `/actuator/info`.
-
----
-
-## 🛠️ Solución de problemas
-
-| Problema | Solución |
-|---|---|
-| `bind: address already in use` en 5433 | Otro servicio usa el puerto. Cambia el mapeo en `docker-compose.yml` o detén ese servicio. |
-| PostgreSQL no responde | `pnpm db:stop && pnpm db:start`, o revisa `docker logs prueba-symplifica-postgres`. |
-| El frontend muestra error de API | Verifica que el backend esté en ejecución en el puerto 8080. |
-| Quieres una base de datos limpia | `pnpm db:reset` y vuelve a iniciar el backend para re-sembrar los datos. |
-| Los tests fallan | Asegúrate de que **Docker está corriendo** (Testcontainers necesita el daemon). |
-
----
-
-## 📄 Licencia
-
-ISC.
