@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: prueba-symplifica-postgres
+    environment:
+      POSTGRES_USER: prueba_user
+      POSTGRES_PASSWORD: prueba_password
+      POSTGRES_DB: prueba_db
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=es_CO.UTF-8"
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prueba_user -d prueba_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - prueba-network
+
+volumes:
+  postgres_data:
+
+networks:
+  prueba-network:
+    driver: bridge

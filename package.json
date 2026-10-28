@@ -1,0 +1,35 @@
+{
+  "name": "prueba-symplifica",
+  "version": "1.0.0",
+  "description": "Prueba t\u00e9cnica desarrollador fullstack mid",
+  "type": "module",
+  "scripts": {
+    "validate:env": "node scripts/validate-env.js",
+    "validate": "pnpm run validate:env",
+    "db:start": "cross-env NODE_ENV=development node scripts/db-cli.js start",
+    "db:stop": "cross-env NODE_ENV=development node scripts/db-cli.js stop",
+    "db:create": "cross-env NODE_ENV=development node scripts/db-cli.js create",
+    "db:drop": "cross-env NODE_ENV=development node scripts/db-cli.js drop",
+    "db:reset": "cross-env NODE_ENV=development node scripts/db-cli.js reset",
+    "db:status": "cross-env NODE_ENV=development node scripts/db-cli.js status",
+    "frontend:dev": "cd frontend && pnpm dev",
+    "frontend:build": "cd frontend && pnpm build",
+    "frontend:preview": "cd frontend && pnpm preview",
+    "backend:dev": "cd backend && mvn spring-boot:run",
+    "backend:build": "cd backend && mvn clean package",
+    "test": "pnpm run test:backend",
+    "test:unit": "pnpm run test:backend",
+    "test:backend": "cd backend && mvn test",
+    "build": "pnpm run frontend:build",
+    "dev": "node scripts/dev-all.js",
+    "dev:frontend-only": "pnpm run db:start && pnpm run frontend:dev",
+    "serve": "pnpm run db:start && pnpm run backend:dev",
+    "start": "pnpm install && pnpm --dir frontend install && pnpm run frontend:build && cd backend && mvn clean package -DskipTests && java -jar target/backend-0.0.1-SNAPSHOT.jar"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}
