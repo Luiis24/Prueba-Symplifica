@@ -1,15 +1,22 @@
-# Etapa de construcción (Build) si el proyecto usa Maven o Gradle con wrapper
-FROM eclipse-temurin:21-jdk-alpine AS build
+# Etapa de construcción (Build)
+FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
-COPY . .
-# Si usa Maven: ./mvnw clean package -DskipTests
-# Si usa Gradle: ./gradlew build -x test
-RUN ./mvnw clean package -DskipTests
 
-# Etapa final de ejecución
-FROM eclipse-temurin:21-jre-alpine
+# Instalar Maven globalmente ya que el proyecto no incluye mvnw
+RUN apk add --no-cache maven
+
+# Copiar el archivo de dependencias y el código fuente
+COPY pom.xml .
+COPY src ./src
+
+# Compilar el proyecto usando Maven global
+RUN mvn clean package -DskipTests
+
+# Etapa final de ejecución (Run)
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
-# Copia el JAR generado (ajusta el nombre del jar si es necesario)
+
+# Copiar el JAR generado desde la etapa de construcción
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
