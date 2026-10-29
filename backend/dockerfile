@@ -1,8 +1,7 @@
-# --- ETAPA 1: Construir el Frontend (Vue.js / Vite) ---
+# --- ETAPA 1: Construir el Frontend (Vue.js) ---
 FROM node:20-alpine AS frontend-build
 WORKDIR /app-frontend
-# Copia la carpeta del frontend (ajusta el nombre si se llama 'frontend' o similar)
-COPY frontend/ ./ 
+COPY frontend/ ./
 RUN npm install && npm run build
 
 # --- ETAPA 2: Construir el Backend (Spring Boot con Java 25) ---
@@ -10,13 +9,13 @@ FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 RUN apk add --no-cache maven
 
-COPY pom.xml .
-COPY src ./src
+COPY backend/pom.xml .
+COPY backend/src ./src
 
-# Copiar los archivos estáticos ya compilados del frontend hacia la carpeta resources de Spring Boot
+# Copiar los archivos compilados del frontend (dist) hacia la carpeta static de Spring Boot
 COPY --from=frontend-build /app-frontend/dist ./src/main/resources/static
 
-# Compilar el JAR final que ya incluirá el frontend integrado
+# Compilar el JAR final que ya incluirá todo el frontend estilizado
 RUN mvn clean package -DskipTests
 
 # --- ETAPA 3: Ejecución final ---
