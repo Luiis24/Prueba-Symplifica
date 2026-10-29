@@ -1,6 +1,6 @@
 <template>
   <main class="container">
-    <h1>Gestión de usuarios</h1>
+    <h1>Gestión de Usuarios</h1>
     <p v-if="loading">Cargando usuarios...</p>
     <p v-if="error" class="error">{{ error }}</p>
     <p v-if="message" class="success">{{ message }}</p>
