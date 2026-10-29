@@ -1,4 +1,4 @@
-# --- ETAPA 1: Construir el Frontend directamente en el Backend ---
+# --- ETAPA 1: Construir el Frontend (Vue.js / Vite) ---
 FROM node:20-alpine AS frontend-build
 WORKDIR /app-frontend
 COPY frontend/ ./
@@ -12,9 +12,11 @@ RUN apk add --no-cache maven
 COPY backend/pom.xml .
 COPY backend/src ./src
 
-# Como Vite ya exportó los archivos estáticos en la etapa anterior directamente 
-# a la ruta relativa del backend, los copiamos desde allá:
-COPY --from=frontend-build /app-frontend/backend/src/main/resources/static ./src/main/resources/static
+# Crear la carpeta de recursos estáticos por si no existe
+RUN mkdir -p ./src/main/resources/static
+
+# Copiar los archivos compilados de Vue desde la carpeta dist estándar del frontend
+COPY --from=frontend-build /app-frontend/dist ./src/main/resources/static
 
 # Compilar el JAR final con todo integrado
 RUN mvn clean package -DskipTests
