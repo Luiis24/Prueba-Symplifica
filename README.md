@@ -161,6 +161,25 @@ pnpm test
 
 ---
 
+## Demo en línea
+
+**Aplicación desplegada:** [Ver demo en Render](https://prueba-symplifica.onrender.com/)
+
+**Repositorio:** [GitHub — Prueba-Symplifica](https://github.com/Luiis24/Prueba-Symplifica)
+
+La aplicación permite probar las operaciones CRUD de usuarios desde una interfaz web responsive. El frontend está integrado en el artefacto ejecutable de Spring Boot, y la persistencia se gestiona mediante PostgreSQL.
+
+### Qué puedes probar
+
+- Consultar los usuarios registrados.
+- Crear nuevos usuarios.
+- Editar la información de un usuario existente.
+- Eliminar usuarios.
+- Verificar los mensajes de confirmación y los estados de carga y error.
+- Comprobar el registro automático del usuario de demostración al ingresar por primera vez.
+
+**Nota:** La disponibilidad de la demo depende del estado del servicio de alojamiento y de la base de datos, al iniciar despues de un tiempo puede tardar en cargar ya que es un plan gratuito.
+
 ## Autor
 
 **Luis Morales**
