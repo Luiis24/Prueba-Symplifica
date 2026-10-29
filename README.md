@@ -2,7 +2,7 @@
 
 <img width="1920" height="945" alt="image" src="https://github.com/user-attachments/assets/150a7841-9dc8-43fc-8aba-b51130bae502" />
 
-Aplicación web full stack desarrollada como parte del proceso de selección para el cargo de **Desarrollador Fullstack Mid en Symplifica**.
+Aplicación web full stack desarrollada como parte del proceso de selección para el cargo de **Desarrollador Fullstack Mid en Symplifica** En vista de que no termine de manera satisfactoria la prueba tecnica en vivo quise agregar lo que me falta y desplegar el proyecto para intentar cubrir un poco la brecha respecto a los resultado de la prueba.
 
 El proyecto integra una SPA construida con **Vue 3 y Vite**, una API REST desarrollada con **Java 25 y Spring Boot 4**, y una base de datos **PostgreSQL** para gestionar usuarios mediante operaciones CRUD completas.
 
